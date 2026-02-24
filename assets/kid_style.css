@@ -1,0 +1,71 @@
+body {
+    background-color: #fffbcc;   /* light, sunny yellow */
+    font-family: 'Baloo', cursive;
+}
+
+/* Override Bootstrap card styling for a playful look */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff8e1;   /* soft cream */
+    min-height: 300px; /* increased height for uniform larger boxes */
+}
+
+/* Title inside cards */
+.card h2 {
+    font-size: 2.5rem;
+    color: #ff5722;   /* bright orange */
+}
+
+/* Text inside cards */
+.card h3, .card p {
+    font-size: 1.8rem;
+    color: #424242;
+}
+
+/* Header */
+h1 {
+    font-size: 3.5rem;
+    color: #ff9800;
+}
+
+/* Ensure images (weather icons) are centered */
+#weather-icon {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Digital clock styling (kept for possible reuse) */
+.digital-clock {
+    font-family: 'Courier New', monospace;
+    font-size: 2.5rem;
+    color: #ff5722;
+    background-color: #000000;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Larger time display */
+#time-display {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+/* Center the commute table */
+#commute-table {
+    text-align: center;
+}
+#commute-table table {
+    margin: 0 auto;
+}
+
+/* Larger text in the commute table */
+#commute-table th,
+#commute-table td {
+    font-size: 2rem;
+}
