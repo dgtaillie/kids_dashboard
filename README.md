@@ -3,7 +3,7 @@
 A simple, colorful dashboard built with **Dash** that shows:
 
 - **Current time** (updates every second)  
-- **Weather** for **Olney, MD** (OpenWeatherMap)  
+- **Weather** for **Washington DC** (OpenWeatherMap)  
 - **Commute time** (Google Maps Distance Matrix)
 
 The UI uses a playful “kid‑friendly” style with large fonts, bright colors, and cartoon‑like icons.
