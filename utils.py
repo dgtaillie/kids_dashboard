@@ -58,7 +58,7 @@ def get_weather(city="Olney", units="imperial"):
 
 
 
-def get_forecast(city="Olney", units="imperial"):
+def get_forecast(city="Washington", units="imperial"):
     """
     Calls OpenWeatherMap 5 day / 3 hour forecast API and returns the first forecast entry.
     """
