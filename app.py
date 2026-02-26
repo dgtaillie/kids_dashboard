@@ -119,8 +119,15 @@ app.layout = dbc.Container(
                     dbc.Card(
                         dbc.CardBody(
                             [
-                                html.H2("Placeholder 1", className="card-title"),
-                                # Add content later
+                                html.H2("", className="card-title"),
+                html.A(
+                    html.Img(
+                        src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg",
+                        style={"height": "160px"},
+                    ),
+                    href="https://open.spotify.com",
+                    target="_blank",
+                )
                             ]
                         ),
                         className="card",
