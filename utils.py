@@ -2,7 +2,7 @@ import os
 import requests
 from datetime import datetime
 import pytz
-import googlemaps
+
 
 
 # Placeholder API keys – replace with your actual keys
@@ -101,27 +101,68 @@ def get_forecast(city="Washington", units="imperial"):
         }
 
 
+
+
+TOMTOM_API_KEY = "YOUR_TOMTOM_API_KEY"
+
+def _geocode(address):
+    """Convert an address string to 'lat,lon' using TomTom's geocoding API."""
+    url = f"https://api.tomtom.com/search/2/geocode/{requests.utils.quote(address)}.json"
+    resp = requests.get(url, params={"key": TOMTOM_API_KEY, "limit": 1})
+    resp.raise_for_status()
+    results = resp.json().get("results", [])
+    if not results:
+        raise ValueError(f"Could not geocode address: {address}")
+    pos = results[0]["position"]
+    return f"{pos['lat']},{pos['lon']}"
+
+
+def _route_summary(route):
+    """Extract a 'via X, Y' summary from a route's instructions."""
+    roads = []
+    seen = set()
+    for leg in route.get("legs", []):
+        for instr in leg.get("guidance", {}).get("instructions", []):
+            road = instr.get("roadNumbers") or [instr.get("street")]
+            for r in road:
+                if r and r not in seen:
+                    seen.add(r)
+                    roads.append(r)
+    # Keep the top 1-2 most prominent roads
+    return ", ".join(roads[:2]) if roads else "unknown route"
+
+
 def commute_times_multi_route(ORIGIN_ADDRESS, DESTINATION_ADDRESS):
-    # Initialize client with API key
-    gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
-
-    # Define locations
-    origin = ORIGIN_ADDRESS
-    destination = DESTINATION_ADDRESS
-
-    # Request directions with alternatives
+    # Only run between 5am and 9am
     now = datetime.now()
-    directions_result = gmaps.directions(
-        origin,
-        destination,
-        mode="driving",
-        departure_time=now,
-        alternatives=True,
-    )
+    if not (5 <= now.hour < 9):
+        return ["XX"]
+
+    # Geocode origin and destination to coordinates
+    origin = _geocode(ORIGIN_ADDRESS)
+    destination = _geocode(DESTINATION_ADDRESS)
+
+    # Request routes with alternatives, using live traffic
+    url = f"https://api.tomtom.com/routing/1/calculateRoute/{origin}:{destination}/json"
+    params = {
+        "key": TOMTOM_API_KEY,
+        "maxAlternatives": 2,
+        "traffic": "true",
+        "travelMode": "car",
+        "routeType": "fastest",
+        "departAt": "now",
+        "instructionsType": "text",
+    }
+    resp = requests.get(url, params=params)
+    resp.raise_for_status()
+    routes = resp.json().get("routes", [])
 
     # Collect commute times for all routes
     views = []
-    for i, route in enumerate(directions_result):
-        views.append(f"Via {route['summary']}: {route['legs'][0]['duration']['text']}")
+    for route in routes:
+        seconds = route["summary"]["travelTimeInSeconds"]
+        minutes = round(seconds / 60)
+        summary = _route_summary(route)
+        views.append(f"Via {summary}: {minutes} min")
 
     return views
